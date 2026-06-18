@@ -1,0 +1,18 @@
+[package]
+name = "pixelforge-core"
+description = "Shared Aseprite-parity sprite engine (WASM + NDK)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[features]
+default = []
+wasm = []

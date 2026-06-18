@@ -1,0 +1,57 @@
+{
+  "last_node_id": 8,
+  "last_link_id": 8,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [0, 0],
+      "widgets_values": ["pixel_dream_v1.0.safetensors"]
+    },
+    {
+      "id": 2,
+      "type": "CLIPTextEncode",
+      "pos": [300, 0],
+      "widgets_values": ["2d pixel art, sprite style, 32x32 fantasy sword icon, limited palette, game asset"]
+    },
+    {
+      "id": 3,
+      "type": "CLIPTextEncode",
+      "pos": [300, 200],
+      "widgets_values": ["blurry, photo, realistic, text, watermark"]
+    },
+    {
+      "id": 4,
+      "type": "EmptyLatentImage",
+      "pos": [300, 400],
+      "widgets_values": [512, 512, 1]
+    },
+    {
+      "id": 5,
+      "type": "KSampler",
+      "pos": [600, 100],
+      "widgets_values": [42, "fixed", 20, 7.5, "euler", "normal", 1.0]
+    },
+    {
+      "id": 6,
+      "type": "VAEDecode",
+      "pos": [900, 100]
+    },
+    {
+      "id": 7,
+      "type": "SaveImage",
+      "pos": [1100, 100],
+      "widgets_values": ["pixelforge_txt2img"]
+    }
+  ],
+  "links": [],
+  "_meta": {
+    "description": "Placeholder workflow — wire node links in ComfyUI UI, then export API format",
+    "pixelforge": {
+      "mode": "txt2img",
+      "model": "pixel_dream_v1.0",
+      "native_resolution": [512, 512],
+      "post_process": ["nearest_downscale", "palette_quantize", "despeckle"]
+    }
+  }
+}

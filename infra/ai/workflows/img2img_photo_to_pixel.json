@@ -1,0 +1,63 @@
+{
+  "last_node_id": 10,
+  "last_link_id": 12,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [0, 0],
+      "widgets_values": ["pixel_dream_v1.0.safetensors"]
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [0, 200],
+      "widgets_values": ["input.png"]
+    },
+    {
+      "id": 3,
+      "type": "CLIPTextEncode",
+      "pos": [300, 0],
+      "widgets_values": ["2d pixel art, sprite style, preserve composition"]
+    },
+    {
+      "id": 4,
+      "type": "CLIPTextEncode",
+      "pos": [300, 150],
+      "widgets_values": ["blurry, noisy, photo realistic"]
+    },
+    {
+      "id": 5,
+      "type": "VAEEncode",
+      "pos": [300, 300]
+    },
+    {
+      "id": 6,
+      "type": "KSampler",
+      "pos": [600, 100],
+      "widgets_values": [42, "fixed", 20, 7.5, "euler", "normal", 0.45]
+    },
+    {
+      "id": 7,
+      "type": "VAEDecode",
+      "pos": [900, 100]
+    },
+    {
+      "id": 8,
+      "type": "SaveImage",
+      "pos": [1100, 100],
+      "widgets_values": ["pixelforge_img2img"]
+    }
+  ],
+  "links": [],
+  "_meta": {
+    "description": "JPG/PNG to pixel art — denoise 0.35-0.55 recommended",
+    "pixelforge": {
+      "mode": "img2img",
+      "model": "pixel_dream_v1.0",
+      "denoise_range": [0.35, 0.55],
+      "preprocess": ["resize_long_edge_512", "strip_exif"],
+      "post_process": ["nearest_downscale", "palette_quantize", "despeckle", "optional_outline"]
+    }
+  }
+}

@@ -1,0 +1,41 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# Node
+node_modules/
+dist/
+.next/
+.turbo/
+
+# Android
+apps/android/.gradle/
+apps/android/build/
+apps/android/local.properties
+apps/android/.cxx/
+*.apk
+*.aab
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Env & secrets
+.env
+.env.local
+*.pem
+
+# AI models (large)
+infra/ai/models/
+infra/ai/ComfyUI/
+*.safetensors
+*.ckpt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Parity test artifacts
+tests/parity/output/
+tests/parity/.cache/
