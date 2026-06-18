@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "baseline": "Aseprite v1.3.17.x",
+  "targets": ["web-wasm", "android-ndk"],
+  "statusValues": ["not_started", "in_progress", "pass", "fail", "exception", "na"],
+  "priorityValues": ["P0", "P1", "P2"],
+  "summary": {
+    "asepriteParityItems": 174,
+    "p0Items": 171,
+    "p1Items": 3,
+    "aiDeltaItems": 10,
+    "cliFlagItems": 11,
+    "fixtureTarget": 50
+  },
+  "fixturePlan": {
+    "roundTripAse": { "min": 10, "prefix": "RT" },
+    "perToolOps": { "min": 24, "prefix": "OP-TOOL" },
+    "timelineTags": { "min": 8, "prefix": "TL" },
+    "tilemaps": { "min": 6, "prefix": "MAP" },
+    "exportCli": { "min": 6, "prefix": "EX" },
+    "colorModes": { "min": 6, "prefix": "CM" }
+  },
+  "sections": [
+    {
+      "id": "tools",
+      "name": "Drawing tools (24)",
+      "items": [
+        { "id": "TOOL-01", "feature": "Rectangular Marquee", "shortcut": "M", "priority": "P0", "behaviors": ["replace", "add", "subtract", "intersect"] },
+        { "id": "TOOL-02", "feature": "Elliptical Marquee", "shortcut": "Shift+M", "priority": "P0", "behaviors": ["selection_modifiers"] },
+        { "id": "TOOL-03", "feature": "Lasso", "shortcut": "Q", "priority": "P0", "behaviors": ["freehand_selection"] },
+        { "id": "TOOL-04", "feature": "Polygonal Lasso", "shortcut": "Shift+Q", "priority": "P0", "behaviors": ["point_by_point"] },
+        { "id": "TOOL-05", "feature": "Magic Wand", "shortcut": "W", "priority": "P0", "behaviors": ["tolerance", "refer_layers", "connectivity_4_8"] },
+        { "id": "TOOL-06", "feature": "Pencil", "shortcut": "B", "priority": "P0", "behaviors": ["pixel_perfect", "shift_straight_line"] },
+        { "id": "TOOL-07", "feature": "Spray", "shortcut": "Shift+B", "priority": "P0", "behaviors": ["density", "size"] },
+        { "id": "TOOL-08", "feature": "Eraser", "shortcut": "E", "priority": "P0", "behaviors": ["simple", "replace_fg_bg"] },
+        { "id": "TOOL-09", "feature": "Eyedropper", "shortcut": "I / Alt", "priority": "P0", "behaviors": ["fg_bg_pick", "pick_desktop_v13"] },
+        { "id": "TOOL-10", "feature": "Paint Bucket", "shortcut": "G", "priority": "P0", "behaviors": ["tolerance", "contiguous", "stop_at_grid", "refer_layer"] },
+        { "id": "TOOL-11", "feature": "Gradient", "shortcut": "Shift+G", "priority": "P0", "behaviors": ["linear", "radial", "dither_matrix"] },
+        { "id": "TOOL-12", "feature": "Line", "shortcut": "L", "priority": "P0", "behaviors": [] },
+        { "id": "TOOL-13", "feature": "Curve", "shortcut": "Shift+L", "priority": "P0", "behaviors": ["bezier"] },
+        { "id": "TOOL-14", "feature": "Rectangle / Filled", "shortcut": "U", "priority": "P0", "behaviors": ["optional_fill"] },
+        { "id": "TOOL-15", "feature": "Ellipse / Filled", "shortcut": "Shift+U", "priority": "P0", "behaviors": ["improved_ellipse_algo"] },
+        { "id": "TOOL-16", "feature": "Contour", "shortcut": "D", "priority": "P0", "behaviors": [] },
+        { "id": "TOOL-17", "feature": "Polygon", "shortcut": "Shift+D", "priority": "P0", "behaviors": [] },
+        { "id": "TOOL-18", "feature": "Blur", "shortcut": "Shift+R", "priority": "P0", "behaviors": ["indexed_palette_snap"] },
+        { "id": "TOOL-19", "feature": "Jumble", "shortcut": "R", "priority": "P0", "behaviors": ["no_new_colors"] },
+        { "id": "TOOL-20", "feature": "Text", "shortcut": "T", "priority": "P0", "behaviors": ["font_load", "hinting", "antialias", "fill_stroke", "ligatures"] },
+        { "id": "TOOL-21", "feature": "Hand", "shortcut": "H / Space", "priority": "P0", "behaviors": ["pan_canvas"] },
+        { "id": "TOOL-22", "feature": "Move", "shortcut": "V / Ctrl", "priority": "P0", "behaviors": ["move_cel", "move_selection"] },
+        { "id": "TOOL-23", "feature": "Slice", "shortcut": "Shift+C", "priority": "P0", "behaviors": ["nine_slice", "pivot", "named_regions"] },
+        { "id": "TOOL-24", "feature": "Zoom", "shortcut": "Z", "priority": "P0", "behaviors": ["integer_zoom_50_3200"] },
+        { "id": "TOOL-QT-01", "feature": "Quicktool Alt→Eyedropper", "shortcut": "Alt", "priority": "P0", "behaviors": ["without_changing_tool"] },
+        { "id": "TOOL-QT-02", "feature": "Quicktool Ctrl→Move", "shortcut": "Ctrl", "priority": "P0", "behaviors": ["without_changing_tool"] },
+        { "id": "TOOL-QT-03", "feature": "Quicktool Space→Hand", "shortcut": "Space", "priority": "P0", "behaviors": ["without_changing_tool"] }
+      ]
+    },
+    {
+      "id": "ink",
+      "name": "Ink modes (7)",
+      "items": [
+        { "id": "INK-01", "feature": "Simple Ink", "priority": "P0", "behaviors": ["opaque", "semi_transparent", "mask_eraser"] },
+        { "id": "INK-02", "feature": "Alpha Compositing", "priority": "P0", "behaviors": [] },
+        { "id": "INK-03", "feature": "Copy Alpha+Color", "priority": "P0", "behaviors": [] },
+        { "id": "INK-04", "feature": "Lock Alpha", "priority": "P0", "behaviors": [] },
+        { "id": "INK-05", "feature": "Shading Ink", "priority": "P0", "behaviors": ["palette_ramp_lr_click"] },
+        { "id": "INK-06", "feature": "Gradient Ink", "priority": "P0", "behaviors": [] },
+        { "id": "INK-07", "feature": "Eraser variants", "priority": "P0", "behaviors": ["replace_fg_bg"] }
+      ]
+    },
+    {
+      "id": "brush",
+      "name": "Brushes and dynamics",
+      "items": [
+        { "id": "BRU-01", "feature": "Brush types: round, square, line", "priority": "P0", "behaviors": ["angle"] },
+        { "id": "BRU-02", "feature": "Custom saved brushes", "priority": "P0", "behaviors": ["parameter_locks"] },
+        { "id": "BRU-03", "feature": "Pattern brushes", "priority": "P0", "behaviors": ["source_dest_paint_align", "ctrl_b_new"] },
+        { "id": "BRU-04", "feature": "Brush flip/rotate while painting", "priority": "P0", "shortcut": "Space+H/X/V/Y/D/R", "behaviors": [] },
+        { "id": "BRU-05", "feature": "Dynamics: pressure + velocity", "priority": "P0", "behaviors": ["min_max", "threshold_handles"] },
+        { "id": "BRU-06", "feature": "Stabilizer (mouse/pen)", "priority": "P0", "behaviors": ["v1.3"] },
+        { "id": "BRU-07", "feature": "Pixel-perfect intertwine", "priority": "P0", "behaviors": ["freehand_tools"] }
+      ]
+    },
+    {
+      "id": "document",
+      "name": "Sprite document model",
+      "items": [
+        { "id": "DOC-01", "feature": "Canvas size W×H", "priority": "P0", "behaviors": [] },
+        { "id": "DOC-02", "feature": "Color mode RGB / Indexed 256 / Grayscale", "priority": "P0", "behaviors": [] },
+        { "id": "DOC-03", "feature": "Color profile sRGB", "priority": "P0", "behaviors": [] },
+        { "id": "DOC-04", "feature": "Pixel aspect ratio", "priority": "P0", "behaviors": [] },
+        { "id": "DOC-05", "feature": "Global user data on sprite", "priority": "P0", "behaviors": ["v1.3"] },
+        { "id": "DOC-06", "feature": "Background layer rules", "priority": "P0", "behaviors": ["single", "opaque", "immovable"] },
+        { "id": "DOC-07", "feature": "Layer groups collapse/expand", "priority": "P0", "behaviors": [] },
+        { "id": "DOC-08", "feature": "Reference layers", "priority": "P0", "behaviors": ["from_file", "clipboard"] },
+        { "id": "DOC-09", "feature": "Tilemap layers", "priority": "P0", "behaviors": ["v1.3"] },
+        { "id": "DOC-10", "feature": "Cel layer×frame with x/y", "priority": "P0", "behaviors": [] },
+        { "id": "DOC-11", "feature": "Cel z-index per frame", "priority": "P0", "behaviors": ["v1.3"] },
+        { "id": "DOC-12", "feature": "Cel opacity (RGB)", "priority": "P0", "behaviors": [] },
+        { "id": "DOC-13", "feature": "Layer blend modes", "priority": "P0", "behaviors": [] },
+        { "id": "DOC-14", "feature": "Linked cels / unlink / continuous", "priority": "P0", "behaviors": [] }
+      ]
+    },
+    {
+      "id": "timeline",
+      "name": "Timeline and animation",
+      "items": [
+        { "id": "TL-01", "feature": "Frame grid layers×frames", "priority": "P0", "behaviors": [] },
+        { "id": "TL-02", "feature": "Per-frame duration ms", "priority": "P0", "behaviors": [] },
+        { "id": "TL-03", "feature": "New / copy / remove / reverse frames", "priority": "P0", "behaviors": [] },
+        { "id": "TL-04", "feature": "Drag-drop move/copy cels and frames", "priority": "P0", "behaviors": [] },
+        { "id": "TL-05", "feature": "Tags: name, color, from/to", "priority": "P0", "behaviors": [] },
+        { "id": "TL-06", "feature": "Tag direction Forward/Reverse/Ping-pong", "priority": "P0", "behaviors": [] },
+        { "id": "TL-07", "feature": "Tag repeat count", "priority": "P0", "behaviors": ["v1.3"] },
+        { "id": "TL-08", "feature": "Tag resize by dragging borders", "priority": "P0", "behaviors": [] },
+        { "id": "TL-09", "feature": "Subtags", "priority": "P0", "behaviors": [] },
+        { "id": "TL-10", "feature": "Playback Enter / Shift+Enter preview", "priority": "P0", "behaviors": ["subtags_repeats_default"] },
+        { "id": "TL-11", "feature": "Onion skin F3", "priority": "P0", "behaviors": ["prev_next_count", "tint", "loop_tag"] },
+        { "id": "TL-12", "feature": "Timeline thumbnails F6", "priority": "P0", "behaviors": [] },
+        { "id": "TL-13", "feature": "Timeline selection customization", "priority": "P0", "behaviors": ["keep_selection"] },
+        { "id": "TL-14", "feature": "Copy/paste between documents", "priority": "P0", "behaviors": ["layers", "frames", "cels"] },
+        { "id": "TL-15", "feature": "Drop files onto timeline", "priority": "P0", "behaviors": ["sprites", "tilemaps"] },
+        { "id": "TL-16", "feature": "Frame navigation Home/End , .", "priority": "P0", "behaviors": ["tag_nav", "alt_g_goto"] }
+      ]
+    },
+    {
+      "id": "selection",
+      "name": "Selection and transformation",
+      "items": [
+        { "id": "SEL-01", "feature": "Selection modes Replace/Add/Sub/Intersect", "priority": "P0", "behaviors": ["shift", "alt_shift", "ctrl_shift"] },
+        { "id": "SEL-02", "feature": "Select All / Cel Content / Deselect / Invert", "priority": "P0", "behaviors": ["ctrl_t"] },
+        { "id": "SEL-03", "feature": "Floating selection transform", "priority": "P0", "behaviors": ["move", "scale", "rotate", "skew_v13"] },
+        { "id": "SEL-04", "feature": "RotSprite rotation", "priority": "P0", "behaviors": ["force_90_option"] },
+        { "id": "SEL-05", "feature": "Pivot numeric control", "priority": "P0", "behaviors": ["v1.3"] },
+        { "id": "SEL-06", "feature": "Snap to grid on move toggle", "priority": "P0", "behaviors": ["v1.3-rc9"] },
+        { "id": "SEL-07", "feature": "Transform multi-layer/frame/cel", "priority": "P0", "behaviors": [] },
+        { "id": "SEL-08", "feature": "Shift wrap pixels in selection", "priority": "P0", "behaviors": [] },
+        { "id": "SEL-09", "feature": "Esc cancel / Enter apply transform", "priority": "P0", "behaviors": ["configurable_v1.3.15"] }
+      ]
+    },
+    {
+      "id": "color",
+      "name": "Color, palette, adjustments",
+      "items": [
+        { "id": "COL-01", "feature": "Color bar fg/bg swap X", "priority": "P0", "behaviors": ["palette_index_display"] },
+        { "id": "COL-02", "feature": "Palette editor F4", "priority": "P0", "behaviors": ["edit", "sort", "resize", "presets_pin"] },
+        { "id": "COL-03", "feature": "RGB/HSB color popup", "priority": "P0", "behaviors": ["missing_color_warning"] },
+        { "id": "COL-04", "feature": "Replace Color Shift+R", "priority": "P0", "behaviors": ["selected_vs_all", "preview_layer"] },
+        { "id": "COL-05", "feature": "Brightness/Contrast", "priority": "P0", "behaviors": [] },
+        { "id": "COL-06", "feature": "Hue/Saturation Ctrl+U", "priority": "P0", "behaviors": ["hsv_hsl"] },
+        { "id": "COL-07", "feature": "Color Curve Ctrl+M", "priority": "P0", "behaviors": [] },
+        { "id": "COL-08", "feature": "Invert per-channel RGBA", "priority": "P0", "behaviors": [] },
+        { "id": "COL-09", "feature": "FX Outline Shift+O", "priority": "P0", "behaviors": ["inside_outside", "custom_shape", "tiled"] },
+        { "id": "COL-10", "feature": "FX Convolution Matrix F9", "priority": "P0", "behaviors": [] },
+        { "id": "COL-11", "feature": "FX Despeckle", "priority": "P0", "behaviors": [] },
+        { "id": "COL-12", "feature": "Color mode conversion + dither", "priority": "P0", "behaviors": ["matrix_options"] },
+        { "id": "COL-13", "feature": "Opacity range 0-255 vs 0-100%", "priority": "P0", "behaviors": ["v1.3.3_pref"] },
+        { "id": "COL-14", "feature": "Copy palette hex to clipboard", "priority": "P0", "behaviors": ["v1.3.3"] }
+      ]
+    },
+    {
+      "id": "tilemap",
+      "name": "Tilemap system (v1.3)",
+      "items": [
+        { "id": "MAP-01", "feature": "New Tilemap Layer Space+N", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-02", "feature": "Convert layer to tilemap", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-03", "feature": "Draw Pixels vs Draw Tiles Space+Tab", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-04", "feature": "Manual mode Space+1", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-05", "feature": "Auto mode Space+2", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-06", "feature": "Stack mode Space+3", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-07", "feature": "Tileset indices 0=empty", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-08", "feature": "External tilesets", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-09", "feature": "Tile pick fg/bg color bar", "priority": "P0", "behaviors": ["v1.3.9"] },
+        { "id": "MAP-10", "feature": "Brush on tilemaps pixel-perfect", "priority": "P0", "behaviors": ["manual_edge_fixes"] },
+        { "id": "MAP-11", "feature": "Export tileset", "priority": "P0", "behaviors": [] },
+        { "id": "MAP-12", "feature": "CLI --export-tileset --split-grid", "priority": "P0", "behaviors": ["server_side"] }
+      ]
+    },
+    {
+      "id": "view",
+      "name": "View, guides, helpers",
+      "items": [
+        { "id": "VIEW-01", "feature": "Tiled Mode pattern preview", "priority": "P0", "behaviors": [] },
+        { "id": "VIEW-02", "feature": "Symmetry H/V axis handles", "priority": "P0", "behaviors": ["mid_pixel"] },
+        { "id": "VIEW-03", "feature": "Grid Ctrl+'", "priority": "P0", "behaviors": [] },
+        { "id": "VIEW-04", "feature": "Pixel Grid Ctrl+Shift+'", "priority": "P0", "behaviors": [] },
+        { "id": "VIEW-05", "feature": "Snap to Grid Shift+S", "priority": "P0", "behaviors": [] },
+        { "id": "VIEW-06", "feature": "Guides + auto guides + layer edge", "priority": "P0", "behaviors": ["custom_colors"] },
+        { "id": "VIEW-07", "feature": "Preview window F7", "priority": "P0", "behaviors": ["shift_f7_hide_layers"] },
+        { "id": "VIEW-08", "feature": "Fullscreen preview F8 / F11", "priority": "P0", "behaviors": [] },
+        { "id": "VIEW-09", "feature": "Brush preview option", "priority": "P0", "behaviors": ["v1.3.12"] },
+        { "id": "VIEW-10", "feature": "Extras/overlays Ctrl+H", "priority": "P0", "behaviors": [] },
+        { "id": "VIEW-11", "feature": "Pick color from desktop", "priority": "P1", "behaviors": ["web_tablet_limited"] }
+      ]
+    },
+    {
+      "id": "fileio",
+      "name": "File I/O and export",
+      "items": [
+        { "id": "IO-01", "feature": ".aseprite / .ase read/write", "priority": "P0", "behaviors": ["full_ase_spec"] },
+        { "id": "IO-02", "feature": "Import PNG GIF BMP WebP JPEG FLI", "priority": "P0", "behaviors": [] },
+        { "id": "IO-03", "feature": "Import image sequences", "priority": "P0", "behaviors": [] },
+        { "id": "IO-04", "feature": "Import sprite sheet Ctrl+I", "priority": "P0", "behaviors": [] },
+        { "id": "IO-05", "feature": "Paste as new sprite", "priority": "P0", "behaviors": [] },
+        { "id": "IO-06", "feature": "Export As GIF PNG seq", "priority": "P0", "shortcut": "Ctrl+Alt+Shift+S", "behaviors": ["resize", "anim_direction", "pixel_ratio"] },
+        { "id": "IO-07", "feature": "Export Sprite Sheet Ctrl+E", "priority": "P0", "behaviors": ["packed", "json_hash_array", "trim", "extrude"] },
+        { "id": "IO-08", "feature": "Export tileset", "priority": "P0", "behaviors": [] },
+        { "id": "IO-09", "feature": "Export selection only", "priority": "P0", "behaviors": [] },
+        { "id": "IO-10", "feature": "Repeat last export Ctrl+Shift+X", "priority": "P0", "behaviors": [] },
+        { "id": "IO-11", "feature": "Pinned/recent export folders", "priority": "P0", "behaviors": ["v1.3.15"] },
+        { "id": "IO-12", "feature": "CLI --batch full flag parity", "priority": "P0", "behaviors": ["server_api"] }
+      ]
+    },
+    {
+      "id": "slices",
+      "name": "Slices and 9-patch",
+      "items": [
+        { "id": "SLC-01", "feature": "Named slice regions + bounds", "priority": "P0", "behaviors": [] },
+        { "id": "SLC-02", "feature": "9-slice center rect + pivot", "priority": "P0", "behaviors": [] },
+        { "id": "SLC-03", "feature": "Export --split-slices", "priority": "P0", "behaviors": [] },
+        { "id": "SLC-04", "feature": "Slice metadata in sheet JSON", "priority": "P0", "behaviors": [] },
+        { "id": "SLC-05", "feature": "Slice tool on tilemap manual", "priority": "P0", "behaviors": ["v1.3.5"] }
+      ]
+    },
+    {
+      "id": "menus",
+      "name": "Menus and commands",
+      "items": [
+        { "id": "MENU-01", "feature": "File menu complete", "priority": "P0", "behaviors": ["new_open_save_import_export"] },
+        { "id": "MENU-02", "feature": "Edit menu complete", "priority": "P0", "behaviors": ["undo_history_clipboard_fx"] },
+        { "id": "MENU-03", "feature": "Sprite menu complete", "priority": "P0", "behaviors": ["properties_canvas_crop"] },
+        { "id": "MENU-04", "feature": "Layer menu complete", "priority": "P0", "behaviors": ["new_convert_merge"] },
+        { "id": "MENU-05", "feature": "Frame menu complete", "priority": "P0", "behaviors": ["tags_playback"] },
+        { "id": "MENU-06", "feature": "Select menu complete", "priority": "P0", "behaviors": ["mask_save"] },
+        { "id": "MENU-07", "feature": "View menu complete", "priority": "P0", "behaviors": ["zoom_grid_onion"] },
+        { "id": "MENU-08", "feature": "Help menu complete", "priority": "P0", "behaviors": ["docs_about"] },
+        { "id": "MENU-09", "feature": "Run Command Ctrl+Space", "priority": "P0", "behaviors": ["search", "math", "lua_eval"] },
+        { "id": "MENU-10", "feature": "~480 keyboard bindings", "priority": "P0", "behaviors": ["from_gui_xml"] }
+      ]
+    },
+    {
+      "id": "prefs",
+      "name": "Customization and extensibility",
+      "items": [
+        { "id": "PRF-01", "feature": "Preferences General", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-02", "feature": "Preferences Tablet", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-03", "feature": "Preferences Files/Color/Alerts/Editor", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-04", "feature": "Preferences Selection/Timeline/Cursors", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-05", "feature": "Preferences Grid/Guides/Undo/Theme", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-06", "feature": "Keyboard rebind + action modifiers", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-07", "feature": "Workspace dockable panels", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-08", "feature": "Themes light/dark custom", "priority": "P0", "behaviors": ["font_hinting_v1.3.14"] },
+        { "id": "PRF-09", "feature": "Session recovery + undo limit MB", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-10", "feature": "Non-linear undo history", "priority": "P0", "behaviors": [] },
+        { "id": "PRF-11", "feature": "Lua API v40", "priority": "P1", "behaviors": ["sandboxed"] },
+        { "id": "PRF-12", "feature": ".aseprite-extension install", "priority": "P1", "behaviors": [] }
+      ]
+    },
+    {
+      "id": "platform",
+      "name": "Platform and input",
+      "items": [
+        { "id": "PLT-01", "feature": "Web Chrome/Edge/Firefox", "priority": "P0", "behaviors": ["wasm"] },
+        { "id": "PLT-02", "feature": "Tablet stylus pressure", "priority": "P0", "behaviors": ["advan_elan_pen"] },
+        { "id": "PLT-03", "feature": "BT keyboard full shortcuts", "priority": "P0", "behaviors": [] },
+        { "id": "PLT-04", "feature": "Touch long-press tool menus", "priority": "P0", "behaviors": [] },
+        { "id": "PLT-05", "feature": "Timeline touch drag", "priority": "P0", "behaviors": [] },
+        { "id": "PLT-06", "feature": "Pinch zoom preview", "priority": "P0", "behaviors": [] },
+        { "id": "PLT-07", "feature": "Tablet-only gate ≥600dp", "priority": "P0", "behaviors": [] },
+        { "id": "PLT-08", "feature": "Offline editing + sync", "priority": "P0", "behaviors": [] }
+      ]
+    },
+    {
+      "id": "edit",
+      "name": "Edit operations (undo, clipboard, sprite ops)",
+      "items": [
+        { "id": "EDT-01", "feature": "Undo / Redo", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-02", "feature": "Undo History panel", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-03", "feature": "Cut / Copy / Copy Merged / Paste", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-04", "feature": "Paste Special", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-05", "feature": "Clear / Fill / Stroke", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-06", "feature": "Flip horizontal/vertical", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-07", "feature": "Rotate 90/180/custom", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-08", "feature": "Sprite canvas size / crop / trim", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-09", "feature": "Layer merge / arrange", "priority": "P0", "behaviors": [] },
+        { "id": "EDT-10", "feature": "Insert Text command", "priority": "P0", "behaviors": [] }
+      ]
+    },
+    {
+      "id": "cli",
+      "name": "CLI batch flags (server-side parity)",
+      "items": [
+        { "id": "CLI-01", "feature": "--sheet", "priority": "P0", "behaviors": ["sprite_sheet_output"] },
+        { "id": "CLI-02", "feature": "--data", "priority": "P0", "behaviors": ["json_metadata"] },
+        { "id": "CLI-03", "feature": "--split-tags", "priority": "P0", "behaviors": [] },
+        { "id": "CLI-04", "feature": "--split-slices", "priority": "P0", "behaviors": [] },
+        { "id": "CLI-05", "feature": "--split-grid", "priority": "P0", "behaviors": [] },
+        { "id": "CLI-06", "feature": "--play-subtags", "priority": "P0", "behaviors": [] },
+        { "id": "CLI-07", "feature": "--list-layer-hierarchy", "priority": "P0", "behaviors": [] },
+        { "id": "CLI-08", "feature": "--export-tileset", "priority": "P0", "behaviors": [] },
+        { "id": "CLI-09", "feature": "--extrude", "priority": "P0", "behaviors": [] },
+        { "id": "CLI-10", "feature": "--trim-by-grid", "priority": "P0", "behaviors": [] },
+        { "id": "CLI-11", "feature": "--script", "priority": "P1", "behaviors": ["lua_execution"] }
+      ]
+    },
+    {
+      "id": "ai",
+      "name": "PixelForge AI delta (not Aseprite parity)",
+      "items": [
+        { "id": "AI-01", "feature": "Text → pixel generation", "priority": "P1", "behaviors": ["comfyui_txt2img"] },
+        { "id": "AI-02", "feature": "JPG/PNG/WebP → pixel art", "priority": "P1", "behaviors": ["img2img", "quantize"] },
+        { "id": "AI-03", "feature": "Sketch → pixel (img2img)", "priority": "P1", "behaviors": ["active_cel_source"] },
+        { "id": "AI-04", "feature": "Inpaint / region regen", "priority": "P1", "behaviors": ["masked_img2img"] },
+        { "id": "AI-05", "feature": "Palette-locked output", "priority": "P1", "behaviors": ["postprocess"] },
+        { "id": "AI-06", "feature": "Style bible + reference board", "priority": "P1", "behaviors": ["project_metadata"] },
+        { "id": "AI-07", "feature": "PC-offline AI banner", "priority": "P1", "behaviors": ["health_check"] },
+        { "id": "AI-08", "feature": "Fast quantize (no diffusion)", "priority": "P1", "behaviors": ["wasm_ndk_cpu"] },
+        { "id": "AI-09", "feature": "Batch convert", "priority": "P2", "behaviors": ["job_queue"] },
+        { "id": "AI-10", "feature": "Generation history", "priority": "P1", "behaviors": ["sidecar_json"] }
+      ]
+    }
+  ]
+}

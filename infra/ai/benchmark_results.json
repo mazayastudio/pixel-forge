@@ -1,0 +1,21 @@
+{
+  "host": "MAZAYA-STUDIO",
+  "gpu": "AMD RX 5600 XT (DirectML)",
+  "workflow": "txt2img_pixel_dream.json",
+  "target_seconds": 60,
+  "runs": [
+    {
+      "date": "2026-06-18",
+      "comfy_url": "http://127.0.0.1:8188",
+      "status": "skipped",
+      "detail": "ComfyUI not running — install per infra/ai/README.md and run run_directml.bat",
+      "elapsed_seconds": null
+    }
+  ],
+  "next_steps": [
+    "Extract ComfyUI portable to infra/ai/ComfyUI/",
+    "Place pixel_dream_v1.0.safetensors in models/checkpoints/",
+    "Wire workflow node links in ComfyUI UI and re-export API JSON",
+    "Re-run: python infra/ai/benchmark.py"
+  ]
+}

@@ -29,6 +29,16 @@
 - Max colors: 4–256
 - Denoise, dither, outline, background removal
 
+## Benchmark results
+
+Recorded in `benchmark_results.json`. Latest run:
+
+| Date | Status | Notes |
+|------|--------|-------|
+| 2026-06-18 | skipped | ComfyUI not installed/running on this host — follow install steps below |
+
+Target after setup: 512×512 txt2img &lt; 60s on RX 5600 XT DirectML.
+
 ## Files
 
 - `infra/ai/run_directml.bat` — GPU launcher
