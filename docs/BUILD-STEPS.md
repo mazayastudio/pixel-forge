@@ -3,7 +3,7 @@
 **Purpose:** Generate PixelForge incrementally from the docs in `docs/`, with a verification gate after every step so nothing ships broken.
 
 **Baseline:** Aseprite v1.3.17.x · **174 P0 parity items** · Web WASM + Android NDK  
-**Current repo state:** Step 0 complete — pinned toolchain, CI, dev scripts; Step 1 next (parity fixtures)
+**Current repo state:** Step 1 complete — 55 fixtures + goldens; Step 2 next (document model)
 
 ---
 
@@ -84,17 +84,20 @@ cargo build -p pixelforge-core
 | **Matrix** | IO-01, RT fixtures |
 
 **Tasks**
-- [ ] Export fixtures from Aseprite: blank, indexed, RGB, tags, linked cels, tilemap, slices
-- [ ] Store in `tests/parity/fixtures/`
-- [ ] Generate goldens via Aseprite CLI → `tests/parity/golden/`
-- [ ] Extend `generate_fixtures.rs` for synthetic blanks per size/mode
-- [ ] Map each fixture to matrix IDs in `run_parity.py`
+- [x] Export fixtures from Aseprite: blank, indexed, RGB, tags, linked cels, tilemap, slices
+- [x] Store in `tests/parity/fixtures/` (manifest-driven, 55 entries)
+- [x] Generate goldens via Aseprite CLI → `tests/parity/golden/`
+- [x] Extend `generate_fixtures.rs` for synthetic blanks per size/mode
+- [x] Map each fixture to matrix IDs in `run_parity.py` via `fixtures/manifest.json`
+
+**Note:** Full round-trip parity for complex (Lua) fixtures deferred to Steps 3–4; Step 1 uses `read_smoke` for `aseprite-lua` sources.
 
 **Verification gate**
-```bash
-cargo run -p pixelforge-core --bin generate_fixtures
+```powershell
+.\scripts\bootstrap-parity-fixtures.ps1
+# or on CI (no Aseprite): generate_fixtures + --fixture-count
 python tests/parity/run_parity.py --list-cases
-# Expect ≥50 fixture files listed (or documented count + plan to reach 50)
+python tests/parity/run_parity.py --fixture-count  # Expect ≥50
 ```
 
 ---
@@ -735,7 +738,7 @@ Update this table as you complete steps:
 | Step | Name | Status | Date |
 |------|------|--------|------|
 | 0 | Dev foundation | ☑ | 2026-06-18 |
-| 1 | Parity fixtures | ◐ | 1 fixture |
+| 1 | Parity fixtures | ☑ | 2026-06-18 |
 | 2 | Document model | ◐ | partial |
 | 3 | ASE read | ◐ | header only |
 | 4 | ASE write | ◐ | indexed blank |

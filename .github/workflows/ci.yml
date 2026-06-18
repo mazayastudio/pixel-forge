@@ -38,5 +38,11 @@ jobs:
       - name: cargo build wasm32
         run: cargo build -p pixelforge-core --target wasm32-unknown-unknown
 
+      - name: generate rust fixtures
+        run: cargo run -p pixelforge-core --bin generate_fixtures -- tests/parity/fixtures
+
+      - name: parity fixture count gate
+        run: python tests/parity/run_parity.py --fixture-count
+
       - name: parity matrix summary
         run: python tests/parity/run_parity.py --summary

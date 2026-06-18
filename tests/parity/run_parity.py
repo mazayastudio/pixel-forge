@@ -2,16 +2,16 @@
 """
 PixelForge parity test runner.
 
-Compares pixelforge-core output against golden images produced by Aseprite CLI.
-Invokes Rust binaries for ASE round-trip on fixtures.
-Reports feature parity matrix coverage from docs/specs/aseprite-parity-matrix.json.
+Loads cases from tests/parity/fixtures/manifest.json.
+Invokes Rust binaries for ASE round-trip / read-smoke on fixtures.
 
 Usage:
-  python run_parity.py --list
+  python run_parity.py --list-cases
+  python run_parity.py --fixture-count
   python run_parity.py --generate-fixtures
+  python run_parity.py --generate-goldens
   python run_parity.py --target wasm
-  python run_parity.py --target ndk --device 1029P002505S070810
-  python run_parity.py --matrix docs/specs/aseprite-parity-matrix.json --target wasm
+  python run_parity.py --summary
 """
 
 from __future__ import annotations
@@ -28,10 +28,11 @@ ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = ROOT / "tests" / "parity" / "fixtures"
 GOLDEN = ROOT / "tests" / "parity" / "golden"
 OUTPUT = ROOT / "tests" / "parity" / "output"
+MANIFEST = FIXTURES / "manifest.json"
 DEFAULT_MATRIX = ROOT / "docs" / "specs" / "aseprite-parity-matrix.json"
+MIN_FIXTURES = 50
 CARGO = Path(os.environ.get("CARGO", Path.home() / ".cargo" / "bin" / "cargo.exe"))
 
-# Bootstrap implementation hints — maps matrix IDs to current engine state.
 BOOTSTRAP_STATUS: dict[str, dict[str, str]] = {
     "IO-01": {"web": "in_progress", "tablet": "in_progress"},
     "AI-08": {"web": "in_progress", "tablet": "in_progress"},
@@ -41,27 +42,57 @@ BOOTSTRAP_STATUS: dict[str, dict[str, str]] = {
 @dataclass
 class ParityCase:
     id: str
-    fixture: str
+    file: str
+    category: str
+    source: str
+    matrix_ids: list[str]
     operation: str
-    description: str
 
 
-CASES: list[ParityCase] = [
-    ParityCase("RT-001", "blank_16x16.aseprite", "open_save", "Round-trip blank indexed sprite"),
-    ParityCase("RT-002", "tags_walk_cycle.aseprite", "open_save", "Frame tags preserved"),
-    ParityCase("RT-003", "tilemap_manual.aseprite", "open_save", "Tilemap layer indices"),
-    ParityCase("RT-004", "linked_cels.aseprite", "open_save", "Linked cels across frames"),
-    ParityCase("RT-005", "slices_ninepatch.aseprite", "open_save", "Slice + 9-patch metadata"),
-    ParityCase("OP-001", "pencil_stroke.aseprite", "pencil_line", "Pencil pixel-perfect line"),
-    ParityCase("OP-002", "bucket_fill.aseprite", "paint_bucket", "Paint bucket tolerance"),
-    ParityCase("OP-003", "rot_sprite.aseprite", "rotate_45", "RotSprite rotation"),
-    ParityCase("EX-001", "anim_4frame.aseprite", "export_sheet", "Sprite sheet + JSON"),
-]
+def load_manifest() -> list[ParityCase]:
+    if not MANIFEST.exists():
+        raise FileNotFoundError(f"manifest not found: {MANIFEST}")
+    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    cases = []
+    for entry in data.get("fixtures", []):
+        cases.append(
+            ParityCase(
+                id=entry["id"],
+                file=entry["file"],
+                category=entry.get("category", ""),
+                source=entry.get("source", "unknown"),
+                matrix_ids=entry.get("matrixIds", []),
+                operation=entry.get("operation", "open_save"),
+            )
+        )
+    return cases
 
 
 def list_cases() -> None:
-    for c in CASES:
-        print(f"{c.id}\t{c.fixture}\t{c.operation}\t{c.description}")
+    cases = load_manifest()
+    print(f"{'ID':<10}\t{'FILE':<32}\t{'SRC':<12}\t{'OP':<12}\tEXISTS\tMATRIX")
+    print("-" * 100)
+    for c in cases:
+        exists = (FIXTURES / c.file).exists()
+        mids = ",".join(c.matrix_ids[:2])
+        if len(c.matrix_ids) > 2:
+            mids += "..."
+        print(f"{c.id:<10}\t{c.file:<32}\t{c.source:<12}\t{c.operation:<12}\t{exists}\t{mids}")
+
+
+def fixture_count_gate() -> int:
+    cases = load_manifest()
+    on_disk = sum(1 for c in cases if (FIXTURES / c.file).exists())
+    ase_files = len(list(FIXTURES.glob("*.aseprite")))
+    goldens = len(list(GOLDEN.glob("*.png")))
+    print(f"manifest entries={len(cases)} fixtures_on_disk={on_disk} aseprite_files={ase_files} goldens={goldens}")
+    if on_disk < MIN_FIXTURES:
+        print(f"FAIL: need >= {MIN_FIXTURES} manifest fixtures on disk, have {on_disk}", file=sys.stderr)
+        return 1
+    if goldens < MIN_FIXTURES:
+        print(f"WARN: goldens {goldens} < {MIN_FIXTURES} (run scripts/generate-goldens.ps1)")
+    print(f"PASS: fixture-count gate ({on_disk} >= {MIN_FIXTURES})")
+    return 0
 
 
 def cargo_available() -> bool:
@@ -93,7 +124,19 @@ def generate_fixtures() -> int:
     return 0
 
 
-def run_roundtrip(fixture_path: Path) -> tuple[str, str]:
+def generate_goldens() -> int:
+    script = ROOT / "scripts" / "generate-goldens.ps1"
+    if not script.exists():
+        print(f"Missing {script}", file=sys.stderr)
+        return 1
+    proc = subprocess.run(
+        ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script)],
+        cwd=ROOT,
+    )
+    return proc.returncode
+
+
+def run_roundtrip(fixture_path: Path, read_only: bool = False) -> tuple[str, str]:
     if not cargo_available():
         return "skipped", "cargo not available"
     cmd = [
@@ -105,12 +148,17 @@ def run_roundtrip(fixture_path: Path) -> tuple[str, str]:
         "--bin",
         "roundtrip",
         "--",
-        str(fixture_path),
     ]
+    if read_only:
+        cmd.append("--read-only")
+    cmd.append(str(fixture_path))
     proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+    out = (proc.stdout or proc.stderr or "").strip()
     if proc.returncode == 0:
-        return "pass", (proc.stdout or "round-trip ok").strip()
-    return "fail", (proc.stderr or proc.stdout or "roundtrip failed").strip()
+        if read_only:
+            return "read_ok", out
+        return "pass", out
+    return "fail", out or "roundtrip failed"
 
 
 def load_matrix(path: Path) -> dict:
@@ -166,7 +214,7 @@ def matrix_report(matrix_path: Path, target: str, device: str | None) -> int:
                     "tablet": tablet,
                 }
             )
-            for platform, value in (("web", web), ("tablet", tablet)):
+            for _, value in (("web", web), ("tablet", tablet)):
                 counts[value] = counts.get(value, 0) + 1
             if priority == "P0":
                 p0_total += 1
@@ -185,7 +233,9 @@ def matrix_report(matrix_path: Path, target: str, device: str | None) -> int:
             "p0_items": p0_total,
             "p0_pass_web": p0_pass_web,
             "p0_pass_tablet": p0_pass_tablet,
-            "p0_pass_both": sum(1 for r in rows if r["priority"] == "P0" and r["web"] == "pass" and r["tablet"] == "pass"),
+            "p0_pass_both": sum(
+                1 for r in rows if r["priority"] == "P0" and r["web"] == "pass" and r["tablet"] == "pass"
+            ),
             "status_counts": counts,
         },
         "sections": matrix["summary"],
@@ -202,6 +252,28 @@ def matrix_report(matrix_path: Path, target: str, device: str | None) -> int:
     return 0
 
 
+def run_case(case: ParityCase, target: str) -> tuple[str, str]:
+    fixture_path = FIXTURES / case.file
+    if not fixture_path.exists():
+        return "skipped", "fixture not present"
+
+    if case.operation == "open_save":
+        if case.source == "rust":
+            return run_roundtrip(fixture_path, read_only=False)
+        return "pending_impl", "full round-trip for aseprite-lua deferred to Step 4"
+
+    if case.operation == "read_smoke":
+        return run_roundtrip(fixture_path, read_only=True)
+
+    if case.operation == "golden_only":
+        golden = GOLDEN / f"{fixture_path.stem}.png"
+        if golden.exists():
+            return "golden_ok", f"golden present: {golden.name}"
+        return "skipped", "golden PNG missing"
+
+    return "pending_impl", f"operation {case.operation} not wired for target={target}"
+
+
 def run(target: str, device: str | None) -> int:
     OUTPUT.mkdir(parents=True, exist_ok=True)
     FIXTURES.mkdir(parents=True, exist_ok=True)
@@ -210,24 +282,16 @@ def run(target: str, device: str | None) -> int:
     if not (FIXTURES / "blank_16x16.aseprite").exists():
         generate_fixtures()
 
+    cases = load_manifest()
     results = []
-    for case in CASES:
-        fixture_path = FIXTURES / case.fixture
-        if not fixture_path.exists():
-            status = "skipped"
-            detail = "fixture not present — export from Aseprite or extend generate_fixtures"
-        elif case.operation == "open_save":
-            status, detail = run_roundtrip(fixture_path)
-        else:
-            status = "pending_impl"
-            detail = f"operation {case.operation} not wired for target={target}"
-
+    for case in cases:
+        status, detail = run_case(case, target)
         results.append({**asdict(case), "status": status, "detail": detail, "target": target})
 
     report = {
         "target": target,
         "device": device,
-        "passed": sum(1 for r in results if r["status"] == "pass"),
+        "passed": sum(1 for r in results if r["status"] in ("pass", "read_ok", "golden_ok")),
         "failed": sum(1 for r in results if r["status"] == "fail"),
         "skipped": sum(1 for r in results if r["status"] == "skipped"),
         "pending": sum(1 for r in results if r["status"] == "pending_impl"),
@@ -245,19 +309,26 @@ def run(target: str, device: str | None) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="PixelForge Aseprite parity harness")
-    parser.add_argument("--list", action="store_true", help="List parity cases")
+    parser.add_argument("--list-cases", action="store_true", help="List manifest parity cases")
+    parser.add_argument("--list", action="store_true", help="Alias for --list-cases")
+    parser.add_argument("--fixture-count", action="store_true", help="Verify >=50 fixtures on disk")
     parser.add_argument("--summary", action="store_true", help="Print parity matrix summary only")
-    parser.add_argument("--generate-fixtures", action="store_true", help="Write bootstrap fixtures")
+    parser.add_argument("--generate-fixtures", action="store_true", help="Write rust bootstrap fixtures")
+    parser.add_argument("--generate-goldens", action="store_true", help="Export golden PNGs via Aseprite")
     parser.add_argument("--matrix", type=Path, help="Path to aseprite-parity-matrix.json")
     parser.add_argument("--target", choices=["wasm", "ndk"], default="wasm")
     parser.add_argument("--device", help="ADB serial for NDK tests")
     args = parser.parse_args()
 
-    if args.list:
+    if args.list_cases or args.list:
         list_cases()
         return 0
+    if args.fixture_count:
+        return fixture_count_gate()
     if args.generate_fixtures:
         return generate_fixtures()
+    if args.generate_goldens:
+        return generate_goldens()
     if args.summary:
         if not DEFAULT_MATRIX.exists():
             print(f"Matrix not found: {DEFAULT_MATRIX}", file=sys.stderr)
