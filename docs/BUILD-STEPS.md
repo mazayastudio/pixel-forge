@@ -3,7 +3,7 @@
 **Purpose:** Generate PixelForge incrementally from the docs in `docs/`, with a verification gate after every step so nothing ships broken.
 
 **Baseline:** Aseprite v1.3.17.x · **174 P0 parity items** · Web WASM + Android NDK  
-**Current repo state:** Step 1 complete — 55 fixtures + goldens; Step 2 next (document model)
+**Current repo state:** Step 2 complete — document model; Step 3 next (ASE read)
 
 ---
 
@@ -111,16 +111,18 @@ python tests/parity/run_parity.py --fixture-count  # Expect ≥50
 | **Matrix** | DOC-01 … DOC-14 |
 
 **Tasks**
-- [ ] `SpriteDocument`: pixels per cel (RGBA + indexed), palette, layers, groups
-- [ ] `LayerKind`: Normal, Group, Tilemap, Reference with correct constraints
-- [ ] `Cel`: position, opacity, z-index per frame, linked-cel graph
-- [ ] `FrameTag`, slices, tileset refs, user data blob
-- [ ] Unit tests: create, mutate, serialize to JSON snapshot
+- [x] `SpriteDocument`: pixels per cel (RGBA + indexed), palette, layers, groups
+- [x] `LayerKind`: Normal, Group, Tilemap, Reference with correct constraints
+- [x] `Cel`: position, opacity, z-index per frame, linked-cel graph
+- [x] `FrameTag`, slices, tileset refs, user data blob
+- [x] Unit tests: create, mutate, serialize to JSON snapshot
+
+**Note:** ASE `read_ase` / `write_ase` still bootstrap-level; full chunk mapping in Steps 3–4.
 
 **Verification gate**
 ```bash
 cargo test -p pixelforge-core document::
-# All document unit tests pass
+cargo test -p pixelforge-core ase::
 ```
 
 ---
@@ -739,7 +741,7 @@ Update this table as you complete steps:
 |------|------|--------|------|
 | 0 | Dev foundation | ☑ | 2026-06-18 |
 | 1 | Parity fixtures | ☑ | 2026-06-18 |
-| 2 | Document model | ◐ | partial |
+| 2 | Document model | ☑ | 2026-06-18 |
 | 3 | ASE read | ◐ | header only |
 | 4 | ASE write | ◐ | indexed blank |
 | 5–45 | … | ☐ | |

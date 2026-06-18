@@ -8,4 +8,6 @@ pub enum CoreError {
     UnsupportedVersion(u16),
     #[error("io error: {0}")]
     Io(#[from] std::io::Error),
+    #[error("document validation: {0}")]
+    Validation(String),
 }

@@ -7,5 +7,9 @@ pub mod document;
 pub mod error;
 pub mod postprocess;
 
-pub use document::SpriteDocument;
+pub use document::{
+    BlendMode, Cel, CelId, CelLink, ColorMode, ColorProfile, Frame, FrameTag, Layer, LayerKind,
+    Palette, PixelGrid, ReferenceSource, Rgba, Slice, SliceBounds, SpriteDocument, TagDirection,
+    TilemapGrid, TilesetRef,
+};
 pub use error::CoreError;

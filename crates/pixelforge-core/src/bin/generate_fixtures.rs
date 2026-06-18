@@ -1,7 +1,7 @@
 //! Generate parity test fixtures (.aseprite) from manifest.json (rust-sourced entries).
 
 use pixelforge_core::ase::{read_ase, write_ase};
-use pixelforge_core::document::{ColorMode, Frame, SpriteDocument};
+use pixelforge_core::document::{ColorMode, SpriteDocument};
 use serde::Deserialize;
 use std::env;
 use std::fs;
@@ -26,7 +26,6 @@ struct ManifestEntry {
 }
 
 fn parse_size_from_file(name: &str) -> Option<(u32, u32, u32)> {
-    // blank_16x16.aseprite, blank_16x16_2f.aseprite, blank_8x8_4f.aseprite
     let stem = name.strip_suffix(".aseprite")?;
     let parts: Vec<&str> = stem.split('_').collect();
     if parts.first() != Some(&"blank") {
@@ -52,19 +51,13 @@ fn parse_size_from_file(name: &str) -> Option<(u32, u32, u32)> {
 }
 
 fn doc_for_entry(entry: &ManifestEntry) -> Option<SpriteDocument> {
-    if let (Some(w), Some(h)) = (entry.width, entry.height) {
-        let frames = entry.frames.unwrap_or(1);
-        let mut doc = SpriteDocument::new_blank(w, h, ColorMode::Indexed);
-        doc.frames = (0..frames)
-            .map(|_| Frame { duration_ms: 100 })
-            .collect();
-        return Some(doc);
-    }
-    let (w, h, frames) = parse_size_from_file(&entry.file)?;
+    let (w, h, frames) = if let (Some(w), Some(h)) = (entry.width, entry.height) {
+        (w, h, entry.frames.unwrap_or(1))
+    } else {
+        parse_size_from_file(&entry.file)?
+    };
     let mut doc = SpriteDocument::new_blank(w, h, ColorMode::Indexed);
-    doc.frames = (0..frames)
-        .map(|_| Frame { duration_ms: 100 })
-        .collect();
+    doc.set_frame_count(frames as usize);
     Some(doc)
 }
 
