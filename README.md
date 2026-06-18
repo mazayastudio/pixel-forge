@@ -27,6 +27,20 @@ tests/
   parity/       # Aseprite parity harness
 ```
 
+## Development setup
+
+**Step 0** — bootstrap toolchain and run the verification gate on MAZAYA-STUDIO:
+
+```powershell
+.\scripts\setup-dev.ps1
+```
+
+This installs Rust stable, adds `wasm32-unknown-unknown` and `aarch64-linux-android` targets, builds native + WASM, and runs tests. Optional: Aseprite CLI check — see [tests/parity/ASEPRITE_BASELINE.md](tests/parity/ASEPRITE_BASELINE.md).
+
+Android NDK linker config: copy [`.cargo/config.toml.example`](.cargo/config.toml.example) → `.cargo/config.toml` (Step 28).
+
+CI: [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — native + WASM build on every push to `main`.
+
 ## Quick start
 
 ### Rust core
@@ -60,6 +74,7 @@ Copy `infra/ai/.env.example` to backend `.env`.
 
 ## Documentation
 
+- [Build steps (step-by-step)](docs/BUILD-STEPS.md) — **start here to implement the project**
 - [PRD](docs/PRD.md)
 - [V1 scope](docs/decisions/v1-scope.md)
 - [Module priority](docs/decisions/module-priority.md)

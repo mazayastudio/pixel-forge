@@ -246,6 +246,7 @@ def run(target: str, device: str | None) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description="PixelForge Aseprite parity harness")
     parser.add_argument("--list", action="store_true", help="List parity cases")
+    parser.add_argument("--summary", action="store_true", help="Print parity matrix summary only")
     parser.add_argument("--generate-fixtures", action="store_true", help="Write bootstrap fixtures")
     parser.add_argument("--matrix", type=Path, help="Path to aseprite-parity-matrix.json")
     parser.add_argument("--target", choices=["wasm", "ndk"], default="wasm")
@@ -257,6 +258,11 @@ def main() -> int:
         return 0
     if args.generate_fixtures:
         return generate_fixtures()
+    if args.summary:
+        if not DEFAULT_MATRIX.exists():
+            print(f"Matrix not found: {DEFAULT_MATRIX}", file=sys.stderr)
+            return 1
+        return matrix_report(DEFAULT_MATRIX, args.target, args.device)
     if args.matrix:
         return matrix_report(args.matrix, args.target, args.device)
     if DEFAULT_MATRIX.exists():

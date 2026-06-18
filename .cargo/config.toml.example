@@ -1,0 +1,17 @@
+# Copy to .cargo/config.toml and adjust paths for your machine.
+# .cargo/config.toml is gitignored (machine-specific linker paths).
+#
+# Prerequisites (Step 28):
+#   - Android Studio → SDK Manager → NDK (Side by side)
+#   - Set ANDROID_NDK_HOME to the NDK root, e.g.:
+#     C:\Users\YOU\AppData\Local\Android\Sdk\ndk\26.1.10909125
+
+# [target.aarch64-linux-android]
+# linker = "C:/Users/YOU/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android34-clang.cmd"
+#
+# [env]
+# ANDROID_NDK_HOME = "C:/Users/YOU/AppData/Local/Android/Sdk/ndk/26.1.10909125"
+
+# Optional: faster links on Windows
+# [target.x86_64-pc-windows-msvc]
+# rustflags = ["-C", "target-feature=+crt-static"]
